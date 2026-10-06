@@ -22,7 +22,7 @@ With Web3Node, you get a lightweight tool that stays out of your way.
 
 ## Installation
 
-1. Clone the repository: `git clone https://github.com/harutosati/Web3Node.git`
+1. Clone the repository: `git clone https://github.com/centxyz/Web3Node.git`
 2. Install dependencies: `pip install -r requirements.txt`
 3. Run the test suite: `pytest`
 
@@ -39,4 +39,4 @@ Contributions are welcome and appreciated. Please submit pull requests and issue
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](https://github.com/harutosati/Web3Node/blob/main/LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/centxyz/Web3Node/blob/main/LICENSE) file for details.
