@@ -1,10 +1,10 @@
 {
-  "name": "web3node",
+  "name": "cidnest",
   "version": "2.0.0",
-  "description": "Content-addressed storage node with HTTP peer replication",
+  "description": "Content-addressed storage with integrity checks and peer replication",
   "main": "src/index.js",
   "bin": {
-    "web3node": "src/index.js"
+    "cidnest": "src/index.js"
   },
   "scripts": {
     "start": "node src/index.js",
@@ -16,7 +16,7 @@
   "keywords": [
     "javascript",
     "nodejs",
-    "web3node",
+    "cidnest",
     "content-addressed-storage",
     "peer-to-peer",
     "sha256"

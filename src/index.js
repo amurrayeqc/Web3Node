@@ -3,19 +3,19 @@
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const minimist = require('minimist');
-const { Web3Node } = require('./web3node');
+const { CIDNest } = require('./cidnest');
 const { createServer } = require('./server');
 
 function usage() {
-    console.log(`Web3Node — content-addressed peer storage
+    console.log(`CIDNest — content-addressed peer storage
 
 Usage:
-  web3node put <file> [--data <dir>] [--peer <url>]
-  web3node get <cid> [--output <file>] [--data <dir>] [--peer <url>]
-  web3node list [--data <dir>]
-  web3node delete <cid> [--data <dir>]
-  web3node status [--data <dir>]
-  web3node serve [--host 127.0.0.1] [--port 8787] [--data <dir>] [--peer <url>]
+  cidnest put <file> [--data <dir>] [--peer <url>]
+  cidnest get <cid> [--output <file>] [--data <dir>] [--peer <url>]
+  cidnest list [--data <dir>]
+  cidnest delete <cid> [--data <dir>]
+  cidnest status [--data <dir>]
+  cidnest serve [--host 127.0.0.1] [--port 8787] [--data <dir>] [--peer <url>]
 `);
 }
 
@@ -29,7 +29,7 @@ async function main(argv = process.argv.slice(2)) {
     if (args.help || !args._[0]) { usage(); return args.help ? 0 : 1; }
 
     const peers = args.peer ? (Array.isArray(args.peer) ? args.peer : [args.peer]) : [];
-    const node = await new Web3Node({ dataDir: args.data, peers, verbose: args.verbose }).init();
+    const node = await new CIDNest({ dataDir: args.data, peers, verbose: args.verbose }).init();
     const [command, target] = args._;
 
     if (command === 'put') {
@@ -57,7 +57,7 @@ async function main(argv = process.argv.slice(2)) {
         if (!Number.isInteger(port) || port < 0 || port > 65535) throw new Error('port must be between 0 and 65535');
         const server = createServer(node);
         await new Promise((resolve, reject) => server.once('error', reject).listen(port, args.host, resolve));
-        console.log(`Web3Node listening on http://${args.host}:${server.address().port}`);
+        console.log(`CIDNest listening on http://${args.host}:${server.address().port}`);
         return new Promise(() => {});
     }
     throw new Error(`Unknown command: ${command}`);
@@ -71,7 +71,7 @@ async function readStdin() {
 
 if (require.main === module) {
     main().then(code => { process.exitCode = code; }).catch(error => {
-        console.error(`Web3Node: ${error.message}`);
+        console.error(`CIDNest: ${error.message}`);
         process.exitCode = 1;
     });
 }

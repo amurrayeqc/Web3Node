@@ -1,6 +1,6 @@
-# Web3Node
+# CIDNest
 
-Web3Node is a lightweight content-addressed storage node. It stores objects by their SHA-256 content identifier (CID), verifies integrity on every read, exposes an HTTP API, and can replicate objects to peer nodes or recover missing objects from them.
+CIDNest is a lightweight content-addressed storage service. It stores objects by their SHA-256 content identifier (CID), verifies integrity on every read, exposes an HTTP API, and can replicate objects to other CIDNest instances or recover missing objects from them.
 
 This is real peer-to-peer storage at the application layer. It does not use a blockchain, token, or global consensus protocol.
 
@@ -22,8 +22,8 @@ This is real peer-to-peer storage at the application layer. It does not use a bl
 ## Install
 
 ```bash
-git clone https://github.com/centxyz/Web3Node.git
-cd Web3Node
+git clone https://github.com/centxyz/CIDNest.git
+cd CIDNest
 npm install
 npm test
 ```
@@ -65,7 +65,7 @@ New uploads are replicated to configured peers. A missing local object is reques
 - `PUT /v1/objects/:cid` with raw bytes whose hash must match `:cid`
 - `DELETE /v1/objects/:cid`
 
-Uploads default to a 10 MiB limit. Send `Content-Type` and optional `X-Web3Node-Name` headers to preserve metadata.
+Uploads default to a 10 MiB limit. Send `Content-Type` and optional `X-CIDNest-Name` headers to preserve metadata.
 
 ## Test
 

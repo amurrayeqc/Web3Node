@@ -2,9 +2,9 @@ const crypto = require('node:crypto');
 const fs = require('node:fs/promises');
 const path = require('node:path');
 
-class Web3Node {
+class CIDNest {
     constructor(config = {}) {
-        this.dataDir = path.resolve(config.dataDir || '.web3node');
+        this.dataDir = path.resolve(config.dataDir || '.cidnest');
         this.objectsDir = path.join(this.dataDir, 'objects');
         this.indexPath = path.join(this.dataDir, 'index.json');
         this.peers = [...new Set(config.peers || [])].map(peer => peer.replace(/\/$/, ''));
@@ -31,7 +31,7 @@ class Web3Node {
     async put(input, options = {}) {
         await this.ensureReady();
         const data = Buffer.isBuffer(input) ? input : Buffer.from(input);
-        const cid = Web3Node.cidFor(data);
+        const cid = CIDNest.cidFor(data);
         const objectPath = this.pathFor(cid);
 
         if (options.expectedCid && options.expectedCid !== cid) {
@@ -109,7 +109,7 @@ class Web3Node {
             try {
                 const response = await this.request(`${peer}/v1/objects/${encodeURIComponent(cid)}`, {
                     method: 'PUT',
-                    headers: { 'content-type': this.index[cid].contentType, 'x-web3node-name': this.index[cid].name || '' },
+                    headers: { 'content-type': this.index[cid].contentType, 'x-cidnest-name': this.index[cid].name || '' },
                     body: data
                 });
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -132,7 +132,7 @@ class Web3Node {
                 const stored = await this.put(data, {
                     expectedCid: cid,
                     contentType: response.headers.get('content-type') || 'application/octet-stream',
-                    name: response.headers.get('x-web3node-name') || null,
+                    name: response.headers.get('x-cidnest-name') || null,
                     replicate: false
                 });
                 return { metadata: stored, data, source: peer };
@@ -158,7 +158,7 @@ class Web3Node {
     }
 
     assertIntegrity(cid, data) {
-        const actual = Web3Node.cidFor(data);
+        const actual = CIDNest.cidFor(data);
         if (actual !== cid) throw new Error(`Stored content failed integrity check: expected ${cid}, received ${actual}`);
     }
 
@@ -184,8 +184,8 @@ class Web3Node {
     }
 
     log(message) {
-        if (this.verbose) console.error(`[Web3Node] ${message}`);
+        if (this.verbose) console.error(`[CIDNest] ${message}`);
     }
 }
 
-module.exports = { Web3Node };
+module.exports = { CIDNest };

@@ -1,14 +1,14 @@
 const fs = require('node:fs/promises');
 const os = require('node:os');
 const path = require('node:path');
-const { Web3Node } = require('../src/web3node');
+const { CIDNest } = require('../src/cidnest');
 const { createServer } = require('../src/server');
 
-describe('Web3Node', () => {
+describe('CIDNest', () => {
     let directories = [];
 
     async function temporaryDirectory() {
-        const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'web3node-'));
+        const directory = await fs.mkdtemp(path.join(os.tmpdir(), 'cidnest-'));
         directories.push(directory);
         return directory;
     }
@@ -19,7 +19,7 @@ describe('Web3Node', () => {
     });
 
     test('stores, addresses, and retrieves content with integrity metadata', async () => {
-        const node = await new Web3Node({ dataDir: await temporaryDirectory() }).init();
+        const node = await new CIDNest({ dataDir: await temporaryDirectory() }).init();
         const stored = await node.put(Buffer.from('decentralized data'), { name: 'example.txt' });
         const object = await node.get(stored.cid);
 
@@ -30,7 +30,7 @@ describe('Web3Node', () => {
     });
 
     test('deduplicates identical content', async () => {
-        const node = await new Web3Node({ dataDir: await temporaryDirectory() }).init();
+        const node = await new CIDNest({ dataDir: await temporaryDirectory() }).init();
         const first = await node.put('same');
         const second = await node.put('same');
         expect(second.cid).toBe(first.cid);
@@ -38,21 +38,21 @@ describe('Web3Node', () => {
     });
 
     test('rejects content that does not match an expected CID', async () => {
-        const node = await new Web3Node({ dataDir: await temporaryDirectory() }).init();
-        await expect(node.put('tampered', { expectedCid: Web3Node.cidFor('original') }))
+        const node = await new CIDNest({ dataDir: await temporaryDirectory() }).init();
+        await expect(node.put('tampered', { expectedCid: CIDNest.cidFor('original') }))
             .rejects.toThrow('integrity mismatch');
     });
 
     test('removes stored content', async () => {
-        const node = await new Web3Node({ dataDir: await temporaryDirectory() }).init();
+        const node = await new CIDNest({ dataDir: await temporaryDirectory() }).init();
         const stored = await node.put('temporary');
         expect(await node.remove(stored.cid)).toBe(true);
         await expect(node.get(stored.cid, { fetchPeers: false })).rejects.toThrow('not found');
     });
 
     test('replicates to and recovers from a peer node', async () => {
-        const first = await new Web3Node({ dataDir: await temporaryDirectory() }).init();
-        const second = await new Web3Node({ dataDir: await temporaryDirectory() }).init();
+        const first = await new CIDNest({ dataDir: await temporaryDirectory() }).init();
+        const second = await new CIDNest({ dataDir: await temporaryDirectory() }).init();
         const peerServer = createServer(second);
         await new Promise((resolve, reject) => peerServer.once('error', reject).listen(0, '127.0.0.1', resolve));
         const peerUrl = `http://127.0.0.1:${peerServer.address().port}`;

@@ -37,8 +37,8 @@ function createServer(node, options = {}) {
                     response.writeHead(200, {
                         'content-type': object.metadata.contentType,
                         'content-length': object.data.length,
-                        'x-web3node-cid': cid,
-                        'x-web3node-name': object.metadata.name || ''
+                        'x-cidnest-cid': cid,
+                        'x-cidnest-name': object.metadata.name || ''
                     });
                     return response.end(object.data);
                 }
@@ -47,7 +47,7 @@ function createServer(node, options = {}) {
                     const stored = await node.put(data, {
                         expectedCid: cid,
                         contentType: request.headers['content-type'],
-                        name: request.headers['x-web3node-name'],
+                        name: request.headers['x-cidnest-name'],
                         replicate: false
                     });
                     return sendJson(response, 201, stored);
@@ -61,7 +61,7 @@ function createServer(node, options = {}) {
                 const data = await readBody(request, maxObjectSize);
                 const stored = await node.put(data, {
                     contentType: request.headers['content-type'],
-                    name: request.headers['x-web3node-name']
+                    name: request.headers['x-cidnest-name']
                 });
                 return sendJson(response, 201, stored);
             }
