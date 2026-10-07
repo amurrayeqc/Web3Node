@@ -80,3 +80,9 @@ The suite verifies persistence, integrity enforcement, deduplication, deletion, 
 ## License
 
 MIT
+
+## Current limitations
+
+- Replication is best-effort between explicitly configured peers; there is no global discovery or consensus layer.
+- SHA-256 identifiers verify content integrity but do not provide confidentiality or access control.
+- Operators remain responsible for authentication, transport security, backups, and storage capacity.
