@@ -1,7 +1,7 @@
 {
   "name": "web3node",
   "version": "1.0.0",
-  "description": "Web3Node - A powerful JavaScript application",
+  "description": "Web3Node JavaScript starter processor with retry scaffolding",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
